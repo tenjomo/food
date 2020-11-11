@@ -12,6 +12,7 @@
           <div class="row">
             <div class="col-md-12">
                 <a href="{{ route('slider.create') }}" class="btn btn-info">New Slider</a>
+                @include('layouts.partial.msg')
               <div class="card">
                 <div class="card-header card-header-primary">
                   <h4 class="card-title ">Tous les sliders</h4>
