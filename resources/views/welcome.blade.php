@@ -54,7 +54,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand" href="#">
-                        <img id="logo" src="images/Logo_main.png" class="logo img-responsive">
+                        <img id="logo" src="{{ asset('frontend/images/Logo_main.png') }}" class="logo img-responsive">
                     </a>
                 </div>
 
@@ -68,6 +68,7 @@
                         <li><a href="#featured-dish">featured</a></li>
                         <li><a href="#reserve">reservation</a></li>
                         <li><a href="#contact">contact</a></li>
+                        <li><a href="{{ route('login') }}">Login</a></li>
                     </ul>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.row -->
