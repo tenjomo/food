@@ -82,7 +82,7 @@ class ItemController extends Controller
      */
     public function show($id)
     {
-        //
+
     }
 
     /**
@@ -93,7 +93,9 @@ class ItemController extends Controller
      */
     public function edit($id)
     {
-        //
+        $item = Item::find($id);
+        $categories = Category::all();
+        return view('admin.item.edit',compact('item','categories'));
     }
 
     /**
@@ -105,7 +107,39 @@ class ItemController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request,[
+            'category' => 'required',
+            'name' => 'required',
+            'description' => 'required',
+            'price' => 'required',
+            'image' => 'mimes:jpeg,jpg,png,bmp',
+        ]);
+
+        $item = Item::find($id);
+        $image = $request->file('image');
+        $slug = Str::slug($request->name);
+        if (isset($image))
+        {
+            $currentDate = Carbon::now()->toDateString();
+            $imagename = $slug .'-'. $currentDate .'-'. uniqid() .'.'. $image->getClientOriginalExtension();
+            if (!file_exists('uploads/item'))
+            {
+                mkdir('uploads/item', 0777 , true);
+            }
+            if(is_file('uploads/item/'.$item->image)){
+                unlink('uploads/item/'.$item->image);
+             }
+        }else {
+            $imagename = $item->image;
+        }
+
+        $item->category_id = $request->category;
+        $item->name = $request->name;
+        $item->description = $request->description;
+        $item->price = $request->price;
+        $item->image = $imagename;
+        $item->save();
+        return redirect()->route('item.index')->with('successMsg','Item Successfully Updated');
     }
 
     /**
@@ -116,6 +150,12 @@ class ItemController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $item = Item::find($id);
+        if (file_exists('uploads/item/'.$item->image))
+        {
+            unlink('uploads/item/'.$item->image);
+        }
+        $item->delete();
+        return redirect()->back()->with('successMsg','Item Successfully Deleted');
     }
 }
