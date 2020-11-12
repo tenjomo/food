@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Item;
 use App\Category;
+use App\Item;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class ItemController extends Controller
 {
@@ -18,8 +18,9 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $items = Item::All();
+        $items = Item::all();
         return view('admin.item.index',compact('items'));
+
     }
 
     /**
@@ -30,7 +31,7 @@ class ItemController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('admin.item.create', compact('categories'));
+        return view('admin.item.create',compact('categories'));
     }
 
     /**
@@ -46,24 +47,23 @@ class ItemController extends Controller
             'name' => 'required',
             'description' => 'required',
             'price' => 'required',
-            'image' => 'required|mimes:jpeg,jpg,png,bmp',
+            'image' => 'required|mimes:jpeg,jpg,bmp,png',
         ]);
-
         $image = $request->file('image');
         $slug = Str::slug($request->name);
         if (isset($image))
         {
             $currentDate = Carbon::now()->toDateString();
-            $imagename = $slug .'-'. $currentDate .'-'. uniqid() .'.'. $image->getClientOriginalExtension();
+            $imagename = $slug.'-'.$currentDate.'-'. uniqid() .'.'. $image->getClientOriginalExtension();
+
             if (!file_exists('uploads/item'))
             {
-                mkdir('uploads/item', 0777 , true);
+                mkdir('uploads/item',0777,true);
             }
             $image->move('uploads/item',$imagename);
-        }else {
-            $imagename = 'default.png';
+        }else{
+            $imagename = "default.png";
         }
-
         $item = new Item();
         $item->category_id = $request->category;
         $item->name = $request->name;
@@ -82,7 +82,7 @@ class ItemController extends Controller
      */
     public function show($id)
     {
-
+        //
     }
 
     /**
@@ -112,24 +112,23 @@ class ItemController extends Controller
             'name' => 'required',
             'description' => 'required',
             'price' => 'required',
-            'image' => 'mimes:jpeg,jpg,png,bmp',
+            'image' => 'mimes:jpeg,jpg,bmp,png',
         ]);
-
         $item = Item::find($id);
         $image = $request->file('image');
         $slug = Str::slug($request->name);
         if (isset($image))
         {
             $currentDate = Carbon::now()->toDateString();
-            $imagename = $slug .'-'. $currentDate .'-'. uniqid() .'.'. $image->getClientOriginalExtension();
+            $imagename = $slug.'-'.$currentDate.'-'. uniqid() .'.'. $image->getClientOriginalExtension();
+
             if (!file_exists('uploads/item'))
             {
-                mkdir('uploads/item', 0777 , true);
+                mkdir('uploads/item',0777,true);
             }
-            if(is_file('uploads/item/'.$item->image)){
-                unlink('uploads/item/'.$item->image);
-             }
-        }else {
+            unlink('uploads/item/'.$item->image);
+            $image->move('uploads/item',$imagename);
+        }else{
             $imagename = $item->image;
         }
 
@@ -156,6 +155,6 @@ class ItemController extends Controller
             unlink('uploads/item/'.$item->image);
         }
         $item->delete();
-        return redirect()->back()->with('successMsg','Item Successfully Deleted');
+        return redirect()->back()->with('successMsg','Item successfully Deleted');
     }
 }

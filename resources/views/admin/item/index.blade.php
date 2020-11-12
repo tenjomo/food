@@ -49,7 +49,7 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $item->name }}</td>
-                                <td>{{ $item->image }}</td>
+                                <td><img src="{{ asset('uploads/item/' . $item->image) }}" width="100px;" height="80px;" alt=""></td>
                                 <td>{{ $item->category->name }}</td>
                                 <td>{{ $item->price }}</td>
                                 <td>{{ $item->created_at }}</td>
